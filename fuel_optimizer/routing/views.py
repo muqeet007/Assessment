@@ -4,6 +4,8 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
+from .services.routing_service import RoutingService
+
 
 def health_check(request):
     return JsonResponse({"status": "ok", "message": "Fuel optimizer routing app is ready."})
@@ -37,4 +39,7 @@ def route(request):
     if errors:
         return JsonResponse({"errors": errors}, status=400)
 
-    return JsonResponse({}, status=200)
+    routing_service = RoutingService()
+    route_result = routing_service.get_route(start, destination)
+
+    return JsonResponse(route_result, status=200)
